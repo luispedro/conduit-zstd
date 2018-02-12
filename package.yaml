@@ -1,0 +1,53 @@
+name:               conduit-zstd
+version:            0.0.1.0
+synopsis:           Conduit-based ZStd Compression
+category:           Conduit
+author:             Luis Pedro Coelho
+maintainer:         Luis Pedro Coelho
+license:            MIT
+license-file:       COPYING
+github:             luispedro/conduit-zstd
+description: >
+        Zstandard compression packaged as a conduit. This is a very thin
+        wrapper around the [official hs-zstd
+        interface](https://github.com/facebookexperimental/hs-zstd/)
+
+extra-source-files:
+ - README.md
+ - ChangeLog
+default-extensions:
+ - BangPatterns
+ - OverloadedStrings
+ - LambdaCase
+ - TupleSections
+ghc-options:
+ - -Wall
+
+dependencies:
+  - base > 4.8 && < 5
+  - bytestring
+  - conduit >= 1.0
+  - zstd
+
+library:
+  exposed-modules:
+    - Data.Conduit.Zstd
+  other-modules: []
+
+tests:
+  conduit-zstd-test:
+    source-dirs:
+        - .
+        - ./tests
+    main: Tests.hs
+    dependencies:
+      - conduit-zstd
+      - conduit
+      - conduit-extra
+      - conduit-combinators
+      - zstd
+      - directory
+      - HUnit
+      - test-framework
+      - test-framework-hunit
+      - test-framework-th

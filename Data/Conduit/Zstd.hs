@@ -15,14 +15,14 @@ import           Data.Maybe (fromMaybe)
 -- | compression conduit
 compress :: MonadIO m =>
         Int -- ^ compression level
-        -> C.Conduit B.ByteString m B.ByteString
+        -> C.ConduitT B.ByteString B.ByteString m ()
 compress level = liftIO (Z.compress level) >>= go
 
 -- | decompression conduit
-decompress :: MonadIO m => C.Conduit B.ByteString m B.ByteString
+decompress :: MonadIO m => C.ConduitT B.ByteString B.ByteString m ()
 decompress = liftIO Z.decompress >>= go
 
-go :: MonadIO m => Z.Result -> C.Conduit B.ByteString m B.ByteString
+go :: MonadIO m => Z.Result -> C.ConduitT B.ByteString B.ByteString m ()
 go (Z.Produce r next) = do
     C.yield r
     liftIO next >>= go

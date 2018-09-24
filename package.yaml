@@ -1,5 +1,5 @@
 name:               conduit-zstd
-version:            0.0.1.0
+version:            0.0.1.1
 synopsis:           Conduit-based ZStd Compression
 category:           Conduit
 author:             Luis Pedro Coelho

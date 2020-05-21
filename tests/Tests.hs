@@ -4,22 +4,21 @@
 {-# LANGUAGE TemplateHaskell, QuasiQuotes, FlexibleContexts, OverloadedStrings #-}
 module Main where
 
-import Test.Framework.TH
-import Test.HUnit
-import Test.Framework.Providers.HUnit
+import Test.Tasty
+import Test.Tasty.QuickCheck
+import Test.QuickCheck.Instances ()
 
 import qualified Data.ByteString as B
-import qualified Data.Conduit as C
-import qualified Data.Conduit.Combinators as CC
-import qualified Data.Conduit.List as CL
-import           Data.Conduit ((.|))
+import Conduit
+import Data.Conduit.List (sourceList)
 
-import qualified Data.Conduit.Zstd as CZ
+import Data.Conduit.Zstd
+
+tests :: TestTree
+tests =
+  testProperty "roundtrip" $ \input -> ioProperty $ do
+    output' <- runConduit (sourceList input .| compress 1 .| decompress .| sinkList)
+    pure $ B.concat input === B.concat output'
 
 main :: IO ()
-main = $(defaultMainGenerator)
-
-case_basic :: IO ()
-case_basic = do
-    hello <- B.concat <$> (C.runConduitRes (CC.yieldMany ["Hello", " ", "World"] .| CZ.compress 2 .| CZ.decompress .| CL.consume))
-    hello @?= "Hello World"
+main = defaultMain tests

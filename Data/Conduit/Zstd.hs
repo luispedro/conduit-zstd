@@ -26,8 +26,12 @@ go :: MonadIO m => Z.Result -> C.ConduitT B.ByteString B.ByteString m ()
 go (Z.Produce r next) = do
     C.yield r
     liftIO next >>= go
-go (Z.Consume f) = do
+go input@(Z.Consume f) = do
     next <- C.await
-    liftIO (f $ fromMaybe B.empty next) >>= go
+    case next of
+      Just chunk | B.null chunk ->
+        go input
+      _ ->
+        liftIO (f $ fromMaybe B.empty next) >>= go
 go (Z.Error m e) = liftIO (throwIO $ userError ("ZStandard error :" ++ m ++ ": " ++ e))
 go (Z.Done r) = C.yield r

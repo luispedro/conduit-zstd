@@ -47,7 +47,6 @@ tests:
       - conduit-combinators
       - zstd
       - directory
-      - HUnit
-      - test-framework
-      - test-framework-hunit
-      - test-framework-th
+      - tasty
+      - tasty-quickcheck
+      - quickcheck-instances
